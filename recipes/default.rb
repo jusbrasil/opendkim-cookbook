@@ -41,7 +41,20 @@ directory "/etc/mail" do
   action :create
 end
 
-opendkim = Chef::EncryptedDataBagItem.load("keys", "opendkim")
+opendkim = data_bag_item("keys", "opendkim")
+
+trusted_servers = search(:node, "role:#{node['opendkim']['trusted_host_role']} AND chef_environment:#{node.chef_environment}").map { |member| "#{member[:fqdn]}" }
+
+template "/etc/opendkim/TrustedHosts" do
+  source "TrustedHosts.erb"
+  owner "opendkim"
+  group "opendkim"
+  mode "0600"
+  variables(
+    :trusted_servers => trusted_servers
+  )
+  notifies :restart, resource(:service => "opendkim")
+end
 
 template "/etc/mail/dkim.key" do
   backup false

@@ -19,7 +19,7 @@ Selector    <%= node['opendkim']['selector'] %>
 
 Socket      <%= node['opendkim']['socket'] %>
 
-InternalHosts <%= node['opendkim']['internal_hosts'] %>
+InternalHosts refile:/etc/opendkim/TrustedHosts
 
 SubDomains <%= node['opendkim']['subdomains'] %>
 
