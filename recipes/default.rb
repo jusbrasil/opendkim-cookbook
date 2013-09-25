@@ -63,7 +63,7 @@ template "/etc/mail/dkim.key" do
   group "opendkim"
   mode "0600"
   variables(
-    :opendkim_private => opendkim['private']
+    :opendkim_private => opendkim['private'].join('\n')
   )
   notifies :restart, resources(:service => "opendkim")
 end
