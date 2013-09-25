@@ -41,6 +41,13 @@ directory "/etc/mail" do
   action :create
 end
 
+directory "/etc/opendkim" do
+  owner "opendkim"
+  group "opendkim"
+  mode "0700"
+  action :create
+end
+
 opendkim = data_bag_item("keys", "opendkim")
 
 trusted_servers = search(:node, "role:#{node['opendkim']['trusted_host_role']} AND chef_environment:#{node.chef_environment}").map { |member| "#{member[:fqdn]}" }
@@ -53,7 +60,7 @@ template "/etc/opendkim/TrustedHosts" do
   variables(
     :trusted_servers => trusted_servers
   )
-  notifies :restart, resource(:service => "opendkim")
+  notifies :restart, resources(:service => "opendkim")
 end
 
 template "/etc/mail/dkim.key" do
@@ -63,7 +70,7 @@ template "/etc/mail/dkim.key" do
   group "opendkim"
   mode "0600"
   variables(
-    :opendkim_private => opendkim['private'].join('\n')
+    :opendkim_private => opendkim['private'].join("\n")
   )
   notifies :restart, resources(:service => "opendkim")
 end
