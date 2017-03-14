@@ -28,3 +28,8 @@ SubDomains <%= node['opendkim']['subdomains'] %>
 #Mode     sv
 #SubDomains   no
 #ADSPDiscard    no
+
+Canonicalization relaxed/relaxed
+OversignHeaders From,Subject,To
+SignHeaders *,+Message-ID,+MIME-Version,+Content-Type
+
