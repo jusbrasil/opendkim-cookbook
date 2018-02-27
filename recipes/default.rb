@@ -48,8 +48,6 @@ directory "/etc/opendkim" do
   action :create
 end
 
-opendkim = data_bag_item("keys", "opendkim")
-
 trusted_servers = search(:node, "role:#{node['opendkim']['trusted_host_role']} AND chef_environment:#{node.chef_environment}").map { |member| "#{member[:fqdn]}" }
 
 template "/etc/opendkim/TrustedHosts" do
@@ -63,6 +61,8 @@ template "/etc/opendkim/TrustedHosts" do
   notifies :restart, resources(:service => "opendkim")
 end
 
+opendkim_key = data_bag_item("keys", "opendkim")[node['opendkim']['key_data_bag_name']].join("\n")
+
 template "/etc/mail/dkim.key" do
   backup false
   source "dkim.key.erb"
@@ -70,7 +70,7 @@ template "/etc/mail/dkim.key" do
   group "opendkim"
   mode "0600"
   variables(
-    :opendkim_private => opendkim['private'].join("\n")
+    :opendkim_private => opendkim_key
   )
   notifies :restart, resources(:service => "opendkim")
 end
