@@ -24,6 +24,7 @@ end
 service "opendkim" do
   supports :restart => true, :reload => true
   action :enable
+  user "opendkim"
 end
 
 template "/etc/opendkim.conf" do
