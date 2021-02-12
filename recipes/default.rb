@@ -24,7 +24,6 @@ end
 service "opendkim" do
   supports :restart => true, :reload => true
   action :enable
-  user "opendkim"
 end
 
 template "/etc/opendkim.conf" do
@@ -36,15 +35,15 @@ template "/etc/opendkim.conf" do
 end
 
 directory "/etc/mail" do
-  owner "opendkim"
-  group "opendkim"
-  mode "0700"
+  owner "root"
+  group "root"
+  mode "0500"
   action :create
 end
 
 directory "/etc/opendkim" do
-  owner "opendkim"
-  group "opendkim"
+  owner "root"
+  group "root"
   mode "0700"
   action :create
 end
@@ -53,8 +52,8 @@ trusted_servers = search(:node, "role:#{node['opendkim']['trusted_host_role']} A
 
 template "/etc/opendkim/TrustedHosts" do
   source "TrustedHosts.erb"
-  owner "opendkim"
-  group "opendkim"
+  owner "root"
+  group "root"
   mode "0600"
   variables(
     :trusted_servers => trusted_servers
@@ -67,8 +66,8 @@ opendkim_key = data_bag_item("keys", "opendkim")[node['opendkim']['key_data_bag_
 template "/etc/mail/dkim.key" do
   backup false
   source "dkim.key.erb"
-  owner "opendkim"
-  group "opendkim"
+  owner "root"
+  group "root"
   mode "0600"
   variables(
     :opendkim_private => opendkim_key

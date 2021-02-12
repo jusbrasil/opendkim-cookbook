@@ -1,7 +1,0 @@
-DEPENDENCIES
-  opendkim
-    path: .
-    metadata: true
-
-GRAPH
-  opendkim (0.0.4)
